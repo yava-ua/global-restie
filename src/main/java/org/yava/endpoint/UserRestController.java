@@ -2,11 +2,15 @@ package org.yava.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.yava.domain.User;
+import org.yava.exceptions.RestieException;
 import org.yava.service.UserCrudService;
+import org.yava.validation.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -15,11 +19,16 @@ public class UserRestController {
 
     private final UserCrudService userCrudService;
 
+    private final UserValidator validator;
+
     @Autowired
-    public UserRestController( UserCrudService userCrudService ) {this.userCrudService = userCrudService;}
+    public UserRestController( UserCrudService userCrudService, UserValidator validator ) {
+        this.userCrudService = userCrudService;
+        this.validator = validator;
+    }
 
     @RequestMapping( method = RequestMethod.POST )
-    public ResponseResult<User> create( @RequestBody User user ) {
+    public ResponseResult<User> create( @Valid @RequestBody User user ) {
         return ResponseResult.success( userCrudService.create( user ) );
     }
 
@@ -29,7 +38,7 @@ public class UserRestController {
     }
 
     @RequestMapping( method = RequestMethod.PUT )
-    public ResponseResult<User> update( @RequestBody User user ) {
+    public ResponseResult<User> update( @Valid @RequestBody User user ) {
         return ResponseResult.success( userCrudService.update( user ) );
     }
 
@@ -42,7 +51,12 @@ public class UserRestController {
     @ResponseBody
     public ResponseResult<User> handleException( HttpServletRequest req, Exception exception ) {
         log.error( "Controller exception ", exception );
-        return ResponseResult.failure( exception );
+        RestieException restieException = new RestieException( exception.getMessage() );
+        return ResponseResult.failure( restieException );
     }
 
+    @InitBinder( "user" )
+    public void setupBinder( WebDataBinder binder ) {
+        binder.addValidators( validator );
+    }
 }

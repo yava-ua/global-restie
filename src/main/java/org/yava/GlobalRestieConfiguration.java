@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.yava.dao.UserDao;
 import org.yava.domain.User;
 import org.yava.service.UserCrudService;
+import org.yava.validation.UserValidator;
 
 @Configuration
 public class GlobalRestieConfiguration {
@@ -22,8 +23,13 @@ public class GlobalRestieConfiguration {
     @Bean
     public UserDao getUserDao( User user ) {
         final UserDao userDao = new UserDao();
-            userDao.create( user );
+        userDao.create( user );
         return userDao;
+    }
+
+    @Bean
+    public UserValidator getUserValidator() {
+        return new UserValidator();
     }
 
     @Bean

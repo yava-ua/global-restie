@@ -33,12 +33,13 @@ public class UserRestControllerTest {
     @MockBean
     private UserCrudService userCrudService;
 
-    private User testUser = new User( 0L );
+    private User testUser = new User( 100L );
 
     @Before
     public void setUp() throws Exception {
         testUser.setEmail( "test@test.com" );
         testUser.setFirstName( "test" );
+        testUser.setUsername( "test" );
         testUser.setUsername( "test" );
     }
 
@@ -68,7 +69,7 @@ public class UserRestControllerTest {
 
     @Test
     public void update() throws Exception {
-        User newUser = new User( 0L );
+        User newUser = new User( 2L );
         newUser.setEmail( "other@test.com" );
         newUser.setFirstName( "other" );
         newUser.setUsername( "other" );
