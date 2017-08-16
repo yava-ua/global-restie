@@ -1,0 +1,10 @@
+server.port: 8080
+
+security.ignored: /api/**
+
+spring.session.store-type: none
+
+logging:
+  level:
+    ROOT: INFO
+    org.yava: DEBUG
